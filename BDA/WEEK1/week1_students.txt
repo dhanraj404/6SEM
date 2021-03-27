@@ -1,0 +1,150 @@
+cqlsh> create keyspace students with replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};
+
+cqlsh> use students;
+
+CREATE TABLE studentinfo (
+    rollno int PRIMARY KEY,
+    dateofjoining timestamp,
+    lastexampercent double,
+    studname text);
+
+DESCRIBE TABLE studentinfo
+
+CREATE TABLE students.studentinfo (
+    rollno int PRIMARY KEY,
+    dateofjoining timestamp,
+    lastexampercent double,
+    studname text
+) WITH bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+cqlsh:students> insert into studentinfo (rollno, studName, dateofJoining, lastExamPercent) values (127, 'Deepika Singh', '20180729', 87.45);
+cqlsh:students> insert into studentinfo (rollno, studName, dateofJoining, lastExamPercent) values (129, 'Akash Singh', '20180729', 83.85);
+cqlsh:students> insert into studentinfo (rollno, studName, dateofJoining, lastExamPercent) values (129, 'Aditya Sharma', '20180729', 93.65);
+cqlsh:students> selct * from studentinfo;
+SyntaxException: line 1:0 no viable alternative at input 'selct' ([selct]...)
+cqlsh:students> select * from studentinfo;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 1970-01-01 05:36:20.729000+0000 |           93.65 | Aditya Sharma
+    127 | 1970-01-01 05:36:20.729000+0000 |           87.45 | Deepika Singh
+
+(2 rows)
+cqlsh:students> insert into studentinfo (rollno, studName, dateofJoining, lastExamPercent) values (130, 'Aditya Sharma', '20180729', 93.65);
+cqlsh:students> insert into studentinfo (rollno, studName, dateofJoining, lastExamPercent) values (131, 'Rahul Varma', '20180729', 92.65);
+cqlsh:students> select * from studentinfo;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 1970-01-01 05:36:20.729000+0000 |           93.65 | Aditya Sharma
+    130 | 1970-01-01 05:36:20.729000+0000 |           93.65 | Aditya Sharma
+    131 | 1970-01-01 05:36:20.729000+0000 |           92.65 |   Rahul Varma
+    127 | 1970-01-01 05:36:20.729000+0000 |           87.45 | Deepika Singh
+
+(4 rows)
+cqlsh:students> select * from studentinfo with rollno = 129;
+SyntaxException: line 1:26 mismatched input 'with' expecting EOF (select * from studentinfo [with] rollno...)
+cqlsh:students> select * from studentinfo where rollno = 129;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 1970-01-01 05:36:20.729000+0000 |           93.65 | Aditya Sharma
+
+(1 rows)
+cqlsh:students> select * from studentinfo where rollno in (127, 129);
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    127 | 1970-01-01 05:36:20.729000+0000 |           87.45 | Deepika Singh
+    129 | 1970-01-01 05:36:20.729000+0000 |           93.65 | Aditya Sharma
+
+(2 rows)
+cqlsh:students> create index on studentinfo(studName);
+cqlsh:students> select * from studentinfo where studName = 'Rahul Varma';
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+-------------
+    131 | 1970-01-01 05:36:20.729000+0000 |           92.65 | Rahul Varma
+
+(1 rows)
+cqlsh:students> select rollno, dateofjoining from studentinfo limit = 2;
+SyntaxException: line 1:52 no viable alternative at input '=' (..., dateofjoining from studentinfo limit [=]...)
+cqlsh:students> select rollno, dateofjoining from studentinfo limit 2;
+
+ rollno | dateofjoining
+--------+---------------------------------
+    129 | 1970-01-01 05:36:20.729000+0000
+    130 | 1970-01-01 05:36:20.729000+0000
+
+(2 rows)
+cqlsh:students> update studentinfo set dateofJoining = '1970-01-01 05:36:20.729000+0000
+            ... 
+cqlsh:students> update studentinfo set dateofJoining = '1970-01-0
+[1]+  Stopped                 ./cqlsh
+bmsce@bmsce-Precision-T1700:~/cassandra/apache-cassandra-3.11.0/bin$ ./cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.4 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+cqlsh> use students
+   ... ;
+cqlsh:students> update studentinfo set dateofJoining = '2018-07-21 05:36:20.729000+0000' where rollno in (127,129,130,131);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Unable to coerce '2018-07-21 05:36:20.729000+0000' to a formatted date (long)"
+cqlsh:students> update studentinfo set dateofJoining = '2018-08-02 05:36:20.729000+0000' where rollno in (127,129,130,131);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Unable to coerce '2018-08-02 05:36:20.729000+0000' to a formatted date (long)"
+cqlsh:students> update studentinfo set dateofJoining = '2018-08-02' where rollno in (127,129,130,131);
+cqlsh:students> select * from studentinfo;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 2018-08-01 18:30:00.000000+0000 |           93.65 | Aditya Sharma
+    130 | 2018-08-01 18:30:00.000000+0000 |           93.65 | Aditya Sharma
+    131 | 2018-08-01 18:30:00.000000+0000 |           92.65 |   Rahul Varma
+    127 | 2018-08-01 18:30:00.000000+0000 |           87.45 | Deepika Singh
+
+(4 rows)
+cqlsh:students> update studentinfo set studName = 'Rahul Jain' where rollno = 130;
+cqlsh:students> select * from studentinfo;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 2018-08-01 18:30:00.000000+0000 |           93.65 | Aditya Sharma
+    130 | 2018-08-01 18:30:00.000000+0000 |           93.65 |    Rahul Jain
+    131 | 2018-08-01 18:30:00.000000+0000 |           92.65 |   Rahul Varma
+    127 | 2018-08-01 18:30:00.000000+0000 |           87.45 | Deepika Singh
+
+(4 rows)
+cqlsh:students> delete lastexampercent from studentinfo where rollno = 130;
+cqlsh:students> select * from studentinfo;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 2018-08-01 18:30:00.000000+0000 |           93.65 | Aditya Sharma
+    130 | 2018-08-01 18:30:00.000000+0000 |            null |    Rahul Jain
+    131 | 2018-08-01 18:30:00.000000+0000 |           92.65 |   Rahul Varma
+    127 | 2018-08-01 18:30:00.000000+0000 |           87.45 | Deepika Singh
+
+(4 rows)
+cqlsh:students> delete from studentinfo where rollno = 130;
+cqlsh:students> select * from studentinfo;
+
+ rollno | dateofjoining                   | lastexampercent | studname
+--------+---------------------------------+-----------------+---------------
+    129 | 2018-08-01 18:30:00.000000+0000 |           93.65 | Aditya Sharma
+    131 | 2018-08-01 18:30:00.000000+0000 |           92.65 |   Rahul Varma
+    127 | 2018-08-01 18:30:00.000000+0000 |           87.45 | Deepika Singh
+
+(3 rows)
+

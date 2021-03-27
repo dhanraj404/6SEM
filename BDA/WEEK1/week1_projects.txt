@@ -1,0 +1,75 @@
+cqlsh:students> create keyspace Projects with replication = {'class' : 'SimpleStrategy', 'replication_factor' : 1};
+cqlsh:students> use Projects;
+cqlsh:projects> select * from system.schema_keyspace;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="unconfigured table schema_keyspace"
+cqlsh:projects> create table Projectdetails (projectid int, projectname text, descrpition text, instructor text, startdate timestamp);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="No PRIMARY KEY specifed (exactly one required)"
+cqlsh:projects> create table Projectdetails (projectid int, projectname text, descrpition text, startdate timestamp, (projectid, projectname) primary key);
+SyntaxException: line 1:101 mismatched input '(' expecting ')' (...descrpition text, startdate timestamp, [(]...)
+cqlsh:projects> create table Projectdetails (projectid int primary key, projectname text primary key, descrpition text, startdate timestamp);
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Multiple PRIMARY KEYs specifed (exactly one required)"
+cqlsh:projects> create table Projectdetails (projectid int, projectname text, descrpition text, startdate timestamp, primary key (projectid, projectname));
+cqlsh:projects> BEGIN BATCH 
+            ... 
+cqlsh:projects> DROP TABLE Projectdetails;
+cqlsh:projects> create table Projectdetails (projectid int, projectname text, studName text, rating double, duration int, primary key (projectid, projectname));
+cqlsh:projects> describe table projectdetails;
+
+CREATE TABLE projects.projectdetails (
+    projectid int,
+    projectname text,
+    duration int,
+    rating double,
+    studname text,
+    PRIMARY KEY (projectid, projectname)
+) WITH CLUSTERING ORDER BY (projectname ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+cqlsh:projects> begin batch
+            ... insert into projectdetails (projectid, projectname, studname, rating, duration)
+            ... values(1, 'MS data migration', 'David Sheen', 3.5, 720)
+            ... insert into projectdetails (projectid, projectname, studname, rating, duration)
+            ... values(1, 'MS data warehouse', 'David Sheen', 3.9, 1440)
+            ... insert into projectdetails (projectid, projectname, studname, rating, duration)
+            ... values(2, 'SAP reporting', 'Stephen Fox', 4.2, 3000)
+            ... insert into projectdetails (projectid, projectname, studname, rating, duration)
+            ... values(2, 'SAP BI DW', 'Stephen Fox', 4, 9000)
+            ... APPLY BATCH;
+cqlsh:projects> SELECT * FROM PROJECTDETAILS;
+
+ projectid | projectname       | duration | rating | studname
+-----------+-------------------+----------+--------+-------------
+         1 | MS data migration |      720 |    3.5 | David Sheen
+         1 | MS data warehouse |     1440 |    3.9 | David Sheen
+         2 |         SAP BI DW |     9000 |      4 | Stephen Fox
+         2 |     SAP reporting |     3000 |    4.2 | Stephen Fox
+
+(4 rows)
+cqlsh:projects> SELECT * FROM projectdetails where projectid = 1;
+
+ projectid | projectname       | duration | rating | studname
+-----------+-------------------+----------+--------+-------------
+         1 | MS data migration |      720 |    3.5 | David Sheen
+         1 | MS data warehouse |     1440 |    3.9 | David Sheen
+
+(2 rows)
+cqlsh:projects> SELECT * FROM projectdetails where projectname = 'MS data warehouse' allow filtering;
+
+ projectid | projectname       | duration | rating | studname
+-----------+-------------------+----------+--------+-------------
+         1 | MS data warehouse |     1440 |    3.9 | David Sheen
+
+
