@@ -1,0 +1,298 @@
+hdoop@dhanrz-G7-7588:~$ ./start-dfs.sh
+-bash: ./start-dfs.sh: No such file or directory
+hdoop@dhanrz-G7-7588:~$ su - dhanrz
+Password: 
+dhanrz@dhanrz-G7-7588:~$ su - hdoop
+Password: 
+-bash: export: `HADOOP_OPTS-Djava.library.path=/home/hdoop/hadoop-3.2.1/lib/nativ': not a valid identifier
+hdoop@dhanrz-G7-7588:~$ su - hdoop
+Password: 
+-bash: export: `HADOOP_OPTS-Djava.library.path=/home/hdoop/hadoop-3.2.1/lib/nativ': not a valid identifier
+hdoop@dhanrz-G7-7588:~$ ls
+hadoop-3.2.1  hadoop-3.2.1.tar.gz  tmpdata
+hdoop@dhanrz-G7-7588:~$ cs hadoop-3.2.1/sbin
+
+Command 'cs' not found, but can be installed with:
+
+apt install csound
+Please ask your administrator.
+
+hdoop@dhanrz-G7-7588:~$ cd hadoop-3.2.1/sbin
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1/sbin$ 
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1/sbin$ ./start-dfs.sh
+Starting namenodes on [localhost]
+Starting datanodes
+Starting secondary namenodes [dhanrz-G7-7588]
+dhanrz-G7-7588: Warning: Permanently added 'dhanrz-g7-7588' (ECDSA) to the list of known hosts.
+2021-04-17 18:26:07,540 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1/sbin$ ./start-yarn.sh
+Starting resourcemanager
+Starting nodemanagers
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1/sbin$ jps
+12336 Jps
+11376 DataNode
+11201 NameNode
+11814 ResourceManager
+12156 NodeManager
+11599 SecondaryNameNode
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1/sbin$ ls -rt 
+workers.sh          stop-dfs.sh            httpfs.sh
+stop-all.sh         stop-dfs.cmd           yarn-daemons.sh
+stop-all.cmd        stop-balancer.sh       yarn-daemon.sh
+start-all.sh        start-secure-dns.sh    stop-yarn.sh
+start-all.cmd       start-dfs.sh           stop-yarn.cmd
+hadoop-daemons.sh   start-dfs.cmd          start-yarn.sh
+hadoop-daemon.sh    start-balancer.sh      start-yarn.cmd
+kms.sh              refresh-namenodes.sh   FederationStateStore
+stop-secure-dns.sh  distribute-exclude.sh  mr-jobhistory-daemon.sh
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1/sbin$ cd ..
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs -mkdir /dhanraj
+2021-04-17 18:28:41,693 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hdfs dfs -ls 
+2021-04-17 18:28:59,737 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+ls: `.': No such file or directory
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hdfs dfs -ls /
+2021-04-17 18:29:05,775 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Found 1 items
+drwxr-xr-x   - hdoop supergroup          0 2021-04-17 18:28 /dhanraj
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs –rm /alpha.txt
+2021-04-17 18:30:15,896 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+–rm: Unknown command
+Usage: hadoop fs [generic options]
+	[-appendToFile <localsrc> ... <dst>]
+	[-cat [-ignoreCrc] <src> ...]
+	[-checksum <src> ...]
+	[-chgrp [-R] GROUP PATH...]
+	[-chmod [-R] <MODE[,MODE]... | OCTALMODE> PATH...]
+	[-chown [-R] [OWNER][:[GROUP]] PATH...]
+	[-copyFromLocal [-f] [-p] [-l] [-d] [-t <thread count>] <localsrc> ... <dst>]
+	[-copyToLocal [-f] [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+	[-count [-q] [-h] [-v] [-t [<storage type>]] [-u] [-x] [-e] <path> ...]
+	[-cp [-f] [-p | -p[topax]] [-d] <src> ... <dst>]
+	[-createSnapshot <snapshotDir> [<snapshotName>]]
+	[-deleteSnapshot <snapshotDir> <snapshotName>]
+	[-df [-h] [<path> ...]]
+	[-du [-s] [-h] [-v] [-x] <path> ...]
+	[-expunge [-immediate]]
+	[-find <path> ... <expression> ...]
+	[-get [-f] [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+	[-getfacl [-R] <path>]
+	[-getfattr [-R] {-n name | -d} [-e en] <path>]
+	[-getmerge [-nl] [-skip-empty-file] <src> <localdst>]
+	[-head <file>]
+	[-help [cmd ...]]
+	[-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [-e] [<path> ...]]
+	[-mkdir [-p] <path> ...]
+	[-moveFromLocal <localsrc> ... <dst>]
+	[-moveToLocal <src> <localdst>]
+	[-mv <src> ... <dst>]
+	[-put [-f] [-p] [-l] [-d] <localsrc> ... <dst>]
+	[-renameSnapshot <snapshotDir> <oldName> <newName>]
+	[-rm [-f] [-r|-R] [-skipTrash] [-safely] <src> ...]
+	[-rmdir [--ignore-fail-on-non-empty] <dir> ...]
+	[-setfacl [-R] [{-b|-k} {-m|-x <acl_spec>} <path>]|[--set <acl_spec> <path>]]
+	[-setfattr {-n name [-v value] | -x name} <path>]
+	[-setrep [-R] [-w] <rep> <path> ...]
+	[-stat [format] <path> ...]
+	[-tail [-f] [-s <sleep interval>] <file>]
+	[-test -[defswrz] <path>]
+	[-text [-ignoreCrc] <src> ...]
+	[-touch [-a] [-m] [-t TIMESTAMP ] [-c] <path> ...]
+	[-touchz <path> ...]
+	[-truncate [-w] <length> <path> ...]
+	[-usage [cmd ...]]
+
+Generic options supported are:
+-conf <configuration file>        specify an application configuration file
+-D <property=value>               define a value for a given property
+-fs <file:///|hdfs://namenode:port> specify default filesystem URL to use, overrides 'fs.defaultFS' property from configurations.
+-jt <local|resourcemanager:port>  specify a ResourceManager
+-files <file1,...>                specify a comma-separated list of files to be copied to the map reduce cluster
+-libjars <jar1,...>               specify a comma-separated list of jar files to be included in the classpath
+-archives <archive1,...>          specify a comma-separated list of archives to be unarchived on the compute machines
+
+The general command line syntax is:
+command [genericOptions] [commandOptions]
+
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs -mkdir /demo
+2021-04-17 18:30:32,741 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs –rm /demo
+2021-04-17 18:30:40,137 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+–rm: Unknown command
+Usage: hadoop fs [generic options]
+	[-appendToFile <localsrc> ... <dst>]
+	[-cat [-ignoreCrc] <src> ...]
+	[-checksum <src> ...]
+	[-chgrp [-R] GROUP PATH...]
+	[-chmod [-R] <MODE[,MODE]... | OCTALMODE> PATH...]
+	[-chown [-R] [OWNER][:[GROUP]] PATH...]
+	[-copyFromLocal [-f] [-p] [-l] [-d] [-t <thread count>] <localsrc> ... <dst>]
+	[-copyToLocal [-f] [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+	[-count [-q] [-h] [-v] [-t [<storage type>]] [-u] [-x] [-e] <path> ...]
+	[-cp [-f] [-p | -p[topax]] [-d] <src> ... <dst>]
+	[-createSnapshot <snapshotDir> [<snapshotName>]]
+	[-deleteSnapshot <snapshotDir> <snapshotName>]
+	[-df [-h] [<path> ...]]
+	[-du [-s] [-h] [-v] [-x] <path> ...]
+	[-expunge [-immediate]]
+	[-find <path> ... <expression> ...]
+	[-get [-f] [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+	[-getfacl [-R] <path>]
+	[-getfattr [-R] {-n name | -d} [-e en] <path>]
+	[-getmerge [-nl] [-skip-empty-file] <src> <localdst>]
+	[-head <file>]
+	[-help [cmd ...]]
+	[-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [-e] [<path> ...]]
+	[-mkdir [-p] <path> ...]
+	[-moveFromLocal <localsrc> ... <dst>]
+	[-moveToLocal <src> <localdst>]
+	[-mv <src> ... <dst>]
+	[-put [-f] [-p] [-l] [-d] <localsrc> ... <dst>]
+	[-renameSnapshot <snapshotDir> <oldName> <newName>]
+	[-rm [-f] [-r|-R] [-skipTrash] [-safely] <src> ...]
+	[-rmdir [--ignore-fail-on-non-empty] <dir> ...]
+	[-setfacl [-R] [{-b|-k} {-m|-x <acl_spec>} <path>]|[--set <acl_spec> <path>]]
+	[-setfattr {-n name [-v value] | -x name} <path>]
+	[-setrep [-R] [-w] <rep> <path> ...]
+	[-stat [format] <path> ...]
+	[-tail [-f] [-s <sleep interval>] <file>]
+	[-test -[defswrz] <path>]
+	[-text [-ignoreCrc] <src> ...]
+	[-touch [-a] [-m] [-t TIMESTAMP ] [-c] <path> ...]
+	[-touchz <path> ...]
+	[-truncate [-w] <length> <path> ...]
+	[-usage [cmd ...]]
+
+Generic options supported are:
+-conf <configuration file>        specify an application configuration file
+-D <property=value>               define a value for a given property
+-fs <file:///|hdfs://namenode:port> specify default filesystem URL to use, overrides 'fs.defaultFS' property from configurations.
+-jt <local|resourcemanager:port>  specify a ResourceManager
+-files <file1,...>                specify a comma-separated list of files to be copied to the map reduce cluster
+-libjars <jar1,...>               specify a comma-separated list of jar files to be included in the classpath
+-archives <archive1,...>          specify a comma-separated list of archives to be unarchived on the compute machines
+
+The general command line syntax is:
+command [genericOptions] [commandOptions]
+
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs -ls /
+2021-04-17 18:30:56,138 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Found 2 items
+drwxr-xr-x   - hdoop supergroup          0 2021-04-17 18:30 /demo
+drwxr-xr-x   - hdoop supergroup          0 2021-04-17 18:28 /dhanraj
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs -rm /demo
+2021-04-17 18:31:19,150 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+rm: `/demo': Is a directory
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs -expunge 
+2021-04-17 18:31:42,676 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs -df 
+2021-04-17 18:31:55,677 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Filesystem                     Size   Used     Available  Use%
+hdfs://127.0.0.1:9000  510763851776  24576  464020561920    0%
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fs / -files
+2021-04-17 18:32:08,918 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+/: Unknown command
+Usage: hadoop fs [generic options]
+	[-appendToFile <localsrc> ... <dst>]
+	[-cat [-ignoreCrc] <src> ...]
+	[-checksum <src> ...]
+	[-chgrp [-R] GROUP PATH...]
+	[-chmod [-R] <MODE[,MODE]... | OCTALMODE> PATH...]
+	[-chown [-R] [OWNER][:[GROUP]] PATH...]
+	[-copyFromLocal [-f] [-p] [-l] [-d] [-t <thread count>] <localsrc> ... <dst>]
+	[-copyToLocal [-f] [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+	[-count [-q] [-h] [-v] [-t [<storage type>]] [-u] [-x] [-e] <path> ...]
+	[-cp [-f] [-p | -p[topax]] [-d] <src> ... <dst>]
+	[-createSnapshot <snapshotDir> [<snapshotName>]]
+	[-deleteSnapshot <snapshotDir> <snapshotName>]
+	[-df [-h] [<path> ...]]
+	[-du [-s] [-h] [-v] [-x] <path> ...]
+	[-expunge [-immediate]]
+	[-find <path> ... <expression> ...]
+	[-get [-f] [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+	[-getfacl [-R] <path>]
+	[-getfattr [-R] {-n name | -d} [-e en] <path>]
+	[-getmerge [-nl] [-skip-empty-file] <src> <localdst>]
+	[-head <file>]
+	[-help [cmd ...]]
+	[-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [-e] [<path> ...]]
+	[-mkdir [-p] <path> ...]
+	[-moveFromLocal <localsrc> ... <dst>]
+	[-moveToLocal <src> <localdst>]
+	[-mv <src> ... <dst>]
+	[-put [-f] [-p] [-l] [-d] <localsrc> ... <dst>]
+	[-renameSnapshot <snapshotDir> <oldName> <newName>]
+	[-rm [-f] [-r|-R] [-skipTrash] [-safely] <src> ...]
+	[-rmdir [--ignore-fail-on-non-empty] <dir> ...]
+	[-setfacl [-R] [{-b|-k} {-m|-x <acl_spec>} <path>]|[--set <acl_spec> <path>]]
+	[-setfattr {-n name [-v value] | -x name} <path>]
+	[-setrep [-R] [-w] <rep> <path> ...]
+	[-stat [format] <path> ...]
+	[-tail [-f] [-s <sleep interval>] <file>]
+	[-test -[defswrz] <path>]
+	[-text [-ignoreCrc] <src> ...]
+	[-touch [-a] [-m] [-t TIMESTAMP ] [-c] <path> ...]
+	[-touchz <path> ...]
+	[-truncate [-w] <length> <path> ...]
+	[-usage [cmd ...]]
+
+Generic options supported are:
+-conf <configuration file>        specify an application configuration file
+-D <property=value>               define a value for a given property
+-fs <file:///|hdfs://namenode:port> specify default filesystem URL to use, overrides 'fs.defaultFS' property from configurations.
+-jt <local|resourcemanager:port>  specify a ResourceManager
+-files <file1,...>                specify a comma-separated list of files to be copied to the map reduce cluster
+-libjars <jar1,...>               specify a comma-separated list of jar files to be included in the classpath
+-archives <archive1,...>          specify a comma-separated list of archives to be unarchived on the compute machines
+
+The general command line syntax is:
+command [genericOptions] [commandOptions]
+
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ hadoop fsck / -files
+WARNING: Use of this script to execute fsck is deprecated.
+WARNING: Attempting to execute replacement "hdfs fsck" instead.
+
+2021-04-17 18:32:27,678 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Connecting to namenode via http://localhost:9870/fsck?ugi=hdoop&files=1&path=%2F
+FSCK started by hdoop (auth:SIMPLE) from /127.0.0.1 for path / at Sat Apr 17 18:32:28 IST 2021
+/ <dir>
+/demo <dir>
+/dhanraj <dir>
+
+Status: HEALTHY
+ Number of data-nodes:	1
+ Number of racks:		1
+ Total dirs:			3
+ Total symlinks:		0
+
+Replicated Blocks:
+ Total size:	0 B
+ Total files:	0
+ Total blocks (validated):	0
+ Minimally replicated blocks:	0
+ Over-replicated blocks:	0
+ Under-replicated blocks:	0
+ Mis-replicated blocks:		0
+ Default replication factor:	1
+ Average block replication:	0.0
+ Missing blocks:		0
+ Corrupt blocks:		0
+ Missing replicas:		0
+
+Erasure Coded Block Groups:
+ Total size:	0 B
+ Total files:	0
+ Total block groups (validated):	0
+ Minimally erasure-coded block groups:	0
+ Over-erasure-coded block groups:	0
+ Under-erasure-coded block groups:	0
+ Unsatisfactory placement block groups:	0
+ Average block group size:	0.0
+ Missing block groups:		0
+ Corrupt block groups:		0
+ Missing internal blocks:	0
+FSCK ended at Sat Apr 17 18:32:28 IST 2021 in 3 milliseconds
+
+
+The filesystem under path '/' is HEALTHY
+hdoop@dhanrz-G7-7588:~/hadoop-3.2.1$ 
