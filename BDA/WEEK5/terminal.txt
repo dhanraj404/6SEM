@@ -1,0 +1,94 @@
+dhanrz@G7-7588:/opt/hadoop$ 
+dhanrz@G7-7588:/opt/hadoop$ jps
+16320 SecondaryNameNode
+16865 NodeManager
+16533 ResourceManager
+18104 Jps
+16106 DataNode
+15933 NameNode
+dhanrz@G7-7588:/opt/hadoop$  hadoop fs -mkdir /input_dir
+dhanrz@G7-7588:/opt/hadoop$ hadoop fs -ls /
+Found 2 items
+drwxr-xr-x   - dhanrz supergroup          0 2021-05-08 08:02 /input_dir
+drwxr-xr-x   - dhanrz supergroup          0 2021-05-08 07:57 /test
+dhanrz@G7-7588:/opt/hadoop$ hadoop fs -put /home/dhanrz/input_text /input_dir
+put: `/home/dhanrz/input_text': No such file or directory
+dhanrz@G7-7588:/opt/hadoop$ hadoop fs -put /home/dhanrz/input_text.txt /input_dir
+dhanrz@G7-7588:/opt/hadoop$ hadoop fs -ls /input_dir
+Found 1 items
+-rw-r--r--   1 dhanrz supergroup         27 2021-05-08 08:06 /input_dir/input_text.txt
+dhanrz@G7-7588:/opt/hadoop$ hadoop dfs -cat /input_dir/input_text
+WARNING: Use of this script to execute dfs is deprecated.
+WARNING: Attempting to execute replacement "hdfs dfs" instead.
+
+cat: `/input_dir/input_text': No such file or directory
+dhanrz@G7-7588:/opt/hadoop$ hadoop dfs -cat /input_dir/input_text.txt
+WARNING: Use of this script to execute dfs is deprecated.
+WARNING: Attempting to execute replacement "hdfs dfs" instead.
+
+Dhanraj K
+1BM18CS027
+dhanrz@G7-7588:/opt/hadoop$ hadoop jar /home/dhanrz/Downloads/MapReduceClient.jar wordcount /input_dir /output_dir
+2021-05-08 08:13:06,123 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+2021-05-08 08:13:06,479 INFO mapreduce.JobResourceUploader: Disabling Erasure Coding for path: /tmp/hadoop-yarn/staging/dhanrz/.staging/job_1620440248989_0001
+2021-05-08 08:13:06,728 INFO input.FileInputFormat: Total input files to process : 1
+2021-05-08 08:13:06,959 INFO mapreduce.JobSubmitter: number of splits:1
+2021-05-08 08:13:07,141 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1620440248989_0001
+2021-05-08 08:13:07,142 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2021-05-08 08:13:07,243 INFO conf.Configuration: resource-types.xml not found
+2021-05-08 08:13:07,243 INFO resource.ResourceUtils: Unable to find 'resource-types.xml'.
+2021-05-08 08:13:07,572 INFO impl.YarnClientImpl: Submitted application application_1620440248989_0001
+2021-05-08 08:13:07,630 INFO mapreduce.Job: The url to track the job: http://G7-7588:8088/proxy/application_1620440248989_0001/
+2021-05-08 08:13:07,630 INFO mapreduce.Job: Running job: job_1620440248989_0001
+2021-05-08 08:13:10,657 INFO mapreduce.Job: Job job_1620440248989_0001 running in uber mode : false
+2021-05-08 08:13:10,657 INFO mapreduce.Job:  map 0% reduce 0%
+2021-05-08 08:13:10,667 INFO mapreduce.Job: Job job_1620440248989_0001 failed with state FAILED due to: Application application_1620440248989_0001 failed 2 times due to AM Container for appattempt_1620440248989_0001_000002 exited with  exitCode: 1
+Failing this attempt.Diagnostics: [2021-05-08 08:13:10.448]Exception from container-launch.
+Container id: container_1620440248989_0001_02_000001
+Exit code: 1
+
+[2021-05-08 08:13:10.450]Container exited with a non-zero exit code 1. Error file: prelaunch.err.
+Last 4096 bytes of prelaunch.err :
+Last 4096 bytes of stderr :
+Error: Could not find or load main class org.apache.hadoop.mapreduce.v2.app.MRAppMaster
+
+Please check whether your etc/hadoop/mapred-site.xml contains the below configuration:
+<property>
+  <name>yarn.app.mapreduce.am.env</name>
+  <value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+<property>
+  <name>mapreduce.map.env</name>
+  <value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+<property>
+  <name>mapreduce.reduce.env</name>
+  <value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+
+[2021-05-08 08:13:10.450]Container exited with a non-zero exit code 1. Error file: prelaunch.err.
+Last 4096 bytes of prelaunch.err :
+Last 4096 bytes of stderr :
+Error: Could not find or load main class org.apache.hadoop.mapreduce.v2.app.MRAppMaster
+
+Please check whether your etc/hadoop/mapred-site.xml contains the below configuration:
+<property>
+  <name>yarn.app.mapreduce.am.env</name>
+  <value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+<property>
+  <name>mapreduce.map.env</name>
+  <value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+<property>
+  <name>mapreduce.reduce.env</name>
+  <value>HADOOP_MAPRED_HOME=${full path of your hadoop distribution directory}</value>
+</property>
+
+For more detailed output, check the application tracking page: http://G7-7588:8088/cluster/app/application_1620440248989_0001 Then click on links to logs of each attempt.
+. Failing the application.
+2021-05-08 08:13:10,681 INFO mapreduce.Job: Counters: 0
+dhanrz@G7-7588:/opt/hadoop$ ^C
+dhanrz@G7-7588:/opt/hadoop$ 
+
+
