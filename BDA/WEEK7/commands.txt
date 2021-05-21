@@ -1,0 +1,27 @@
+cd hadoop
+
+sbin/start-all.sh
+
+jps
+
+hdfs dfs -ls /
+
+hdfs dfs -rm -r /input_dir
+hdfs dfs -rm -r /output_dir
+
+hdfs dfs -ls /
+
+hdfs dfs -mkdir /input_dir
+
+hdfs dfs -ls /
+
+hadoop fs -put /home/dhanrz/WEEK7/temp.txt /input_dir
+
+hdfs dfs -cat /input_dir/input.txt      ##temp.txt files too big
+
+hadoop jar /home/dhanrz/WEEK7/avgtemp.jar temp.AverageDriver /input_dir/temp.txt /avgtemp_outputdir
+
+hdfs dfs -ls /avgtemp_outputdir
+
+hdfs dfs -cat /avgtemp_outputdir/part-r-00000
+
