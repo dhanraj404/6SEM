@@ -1,0 +1,400 @@
+
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 3.11.10 | CQL spec 3.4.4 | Native protocol v4]
+Use HELP for help.
+WARNING: pyreadline dependency missing.  Install to enable tab completion.
+cqlsh> select *  from schema_schema.keyspaces;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Keyspace schema_schema does not exist"
+cqlsh> select *  from system_schema.keyspaces;
+
+ keyspace_name      | durable_writes | replication
+--------------------+----------------+-------------------------------------------------------------------------------------
+        system_auth |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '1'}
+      system_schema |           True |                             {'class': 'org.apache.cassandra.locator.LocalStrategy'}
+ system_distributed |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '3'}
+             system |           True |                             {'class': 'org.apache.cassandra.locator.LocalStrategy'}
+      system_traces |           True | {'class': 'org.apache.cassandra.locator.SimpleStrategy', 'replication_factor': '2'}
+
+(5 rows)
+cqlsh> create keyspace company with replication = {'class':'SimpleStrategy', 'replication_factor':1}
+   ... ;
+cqlsh> use company;
+cqlsh:company> create table employee(_id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primary key(_id, name));
+Invalid syntax at line 1, char 23
+  create table employee(_id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primary key(_id, name));
+                        ^
+cqlsh:company> create table employee(_id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primary key (_id, name));
+Invalid syntax at line 1, char 23
+  create table employee(_id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primary key (_id, name));
+                        ^
+cqlsh:company> create table employee(_id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primarykey (_id, name));
+Invalid syntax at line 1, char 23
+  create table employee(_id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primarykey (_id, name));
+                        ^
+cqlsh:company>  create table Projectdetails (projectid int, projectname text, studName text, rating double, duration int, primary key (projectid, projectname));
+cqlsh:company> drop table Projectdetails
+           ... ;
+cqlsh:company>  create table Employee (id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primary key (id, name));
+cqlsh:company> describe Employee
+
+CREATE TABLE company.employee (
+    id int,
+    name text,
+    dept text,
+    designation text,
+    emp_no int,
+    hobbies set<text>,
+    marital_status text,
+    salary int,
+    PRIMARY KEY (id, name)
+) WITH CLUSTERING ORDER BY (name ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+cqlsh:company> insert into Employee(id, name, emp_no, salary, dept, designation, marital_status, hobbies) values (1, 'Dhanraj', 101,'Software', 'junior dev', 'Not married', {'football','bloging','running'});
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Unmatched column names/values"
+cqlsh:company> ; insert into Employee(id, name, emp_no, salary, dept, designation, marital_status, hobbies) values (1, 'Dhanraj', 101,90000,'Software', 'junior dev', 'Not married', {'football','bloging','running'});
+SyntaxException: line 1:0 no viable alternative at input ';' ([;])
+cqlsh:company> ; insert into Employee(id, name, emp_no, salary, dept, designation, marital_status, hobbies) values (1, 'Dhanraj', 101,90000,'Software', 'junior dev', 'Not married', {'football','bloging','running'});
+SyntaxException: line 1:0 no viable alternative at input ';' ([;])
+cqlsh:company>  insert into Employee(id, name, dept, designation, emp_no, hobbies, marital_status, salary) values (1, 'Dhanraj','Software', 'junior dev', 101, {'football','bloging','running'}, 'Not married', 90000);
+cqlsh:company> select * form Employee;
+SyntaxException: line 1:9 mismatched input 'form' expecting K_FROM (select * [form]...)
+cqlsh:company> select * from Employee;
+
+ id | name    | dept     | designation | emp_no | hobbies                            | marital_status | salary
+----+---------+----------+-------------+--------+------------------------------------+----------------+--------
+  1 | Dhanraj | Software |  junior dev |    101 | {'bloging', 'football', 'running'} |    Not married |  90000
+
+(1 rows)
+cqlsh:company>  insert into Employee(id, name, dept, designation, emp_no, hobbies, marital_status, salary) values (2, 'Raju','Ceo', 'Manager', 202, {'cooking', 'reading'}, 'married', 88000);
+cqlsh:company>  insert into Employee(id, name, dept, designation, emp_no, hobbies, marital_status, salary) values (4, 'Alex','Sales', 'Manager', 202, {'cooking', 'reading'}, 'married', 111000);
+cqlsh:company> select * from Employee;
+
+ id | name    | dept     | designation | emp_no | hobbies                            | marital_status | salary
+----+---------+----------+-------------+--------+------------------------------------+----------------+--------
+  1 | Dhanraj | Software |  junior dev |    101 | {'bloging', 'football', 'running'} |    Not married |  90000
+  2 |    Raju |      Ceo |     Manager |    202 |             {'cooking', 'reading'} |        married |  88000
+  4 |    Alex |    Sales |     Manager |    202 |             {'cooking', 'reading'} |        married | 111000
+
+(3 rows)
+cqlsh:company> select name, dept form Employee where designation='Manager' and salary>85000 orderby name desc;
+SyntaxException: line 1:18 no viable alternative at input 'form' (select name, [dept] form...)
+cqlsh:company> select name, dept from Employee where designation='Manager' and salary>85000 orderby name desc;
+SyntaxException: line 1:77 mismatched input 'orderby' expecting EOF (...designation='Manager' and salary>85000 [orderby]...)
+cqlsh:company> select name, dept from Employee where designation='Manager' and salary>85000 order by name desc;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as it might involve data filtering and thus may have unpredictable performance. If you want to execute this query despite the performance unpredictability, use ALLOW FILTERING"
+cqlsh:company> select name, dept from Employee where designation='Manager' and salary>85000 order by name desc allow filtering;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="ORDER BY is only supported when the partition key is restricted by an EQ or an IN."
+cqlsh:company> select name, dept form Employee where designation="Manager" and salary>85000
+           ... ;
+SyntaxException: line 1:18 no viable alternative at input 'form' (select name, [dept] form...)
+cqlsh:company> select name, dept from Employee where designation="Manager" and salary>85000
+           ... ;
+SyntaxException: line 1:60 no viable alternative at input 'and' (...dept from Employee where designation=["Manage]r" and...)
+cqlsh:company> alter table Employee add previous_expirence int;
+cqlsh:company> select * from Employee;
+
+ id | name    | dept     | designation | emp_no | hobbies                            | marital_status | previous_expirence | salary
+----+---------+----------+-------------+--------+------------------------------------+----------------+--------------------+--------
+  1 | Dhanraj | Software |  junior dev |    101 | {'bloging', 'football', 'running'} |    Not married |               null |  90000
+  2 |    Raju |      Ceo |     Manager |    202 |             {'cooking', 'reading'} |        married |               null |  88000
+  4 |    Alex |    Sales |     Manager |    202 |             {'cooking', 'reading'} |        married |               null | 111000
+
+(3 rows)
+cqlsh:company> update Employee set previous_expirence=15 where id=4
+           ... ;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Some clustering keys are missing: name"
+cqlsh:company> update Employee set previous_expirence=15 where id=4 and name='Alex';
+cqlsh:company> select * from Employee;
+
+ id | name    | dept     | designation | emp_no | hobbies                            | marital_status | previous_expirence | salary
+----+---------+----------+-------------+--------+------------------------------------+----------------+--------------------+--------
+  1 | Dhanraj | Software |  junior dev |    101 | {'bloging', 'football', 'running'} |    Not married |               null |  90000
+  2 |    Raju |      Ceo |     Manager |    202 |             {'cooking', 'reading'} |        married |               null |  88000
+  4 |    Alex |    Sales |     Manager |    202 |             {'cooking', 'reading'} |        married |                 15 | 111000
+
+(3 rows)
+cqlsh:company> copy Employee(id, name, dept, designation,emp_no,hobbies,marital_status,previous_expirence,salary) to C:\Users\dhanr\Desktop\LABTEST1\write.csv
+Invalid syntax at line 1, char 105
+  copy Employee(id, name, dept, designation,emp_no,hobbies,marital_status,previous_expirence,salary) to C:\Users\dhanr\Desktop\LABTEST1\write.csv
+                                                                                                          ^
+cqlsh:company> copy Employee(id, name, dept, designation,emp_no,hobbies,marital_status,previous_expirence,salary) to 'C:\Users\dhanr\Desktop\LABTEST1\write.csv'
+           ... ;
+Using 11 child processes
+
+Starting copy of company.employee with columns [id, name, dept, designation, emp_no, hobbies, marital_status, previous_expirence, salary].
+Processed: 3 rows; Rate:       1 rows/s; Avg. rate:       1 rows/s
+3 rows exported to 1 files in 3.079 seconds.
+cqlsh:company> truncate Employee;
+cqlsh:company> select * from Employee;
+
+ id | name | dept | designation | emp_no | hobbies | marital_status | previous_expirence | salary
+----+------+------+-------------+--------+---------+----------------+--------------------+--------
+
+(0 rows)
+cqlsh:company>  copy Employee(id, name, dept, designation,emp_no,hobbies,marital_status,previous_expirence,salary) from 'C:\Users\dhanr\Desktop\LABTEST1\read.csv'
+           ... ;
+Using 11 child processes
+
+Starting copy of company.employee with columns [id, name, dept, designation, emp_no, hobbies, marital_status, previous_expirence, salary].
+Process ImportProcess-19:      1 rows/s; Avg. rate:       1 rows/s
+Traceback (most recent call last):
+  File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+PPPPPProcess ImportProcess-18:
+rocess ImportProcess-13:
+Process ImportProcess-15:
+rocess ImportProcess-20:
+Process ImportProcess-21:
+PT raceback (most recent call last):
+TTrocess ImportProcess-17:
+raceback (most recent call last):
+T rocess ImportProcess-16:
+rocess ImportProcess-12:
+   self.run()
+P rocess ImportProcess-22:
+TTraceback (most recent call last):
+rocess ImportProcess-14:
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+TT  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+T raceback (most recent call last):
+ T    self.run()
+raceback (most recent call last):
+raceback (most recent call last):
+raceback (most recent call last):
+    File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+raceback (most recent call last):
+raceback (most recent call last):
+   File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+   self.run()
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+     self.run()
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+raceback (most recent call last):
+    self.run()
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+     self.run()
+   self.run()
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+        self.run()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "D:\Program_Files\Python\lib\multiprocessing\process.py", line 267, in _bootstrap
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+    self.run()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+   self.run()
+   self.run()
+    File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2330, in run
+    self.close()
+     self.close()
+      self.close()
+       self.close()
+     self.close()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self.close()
+    self.close()
+   self.close()
+   self.close()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+    self.close()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self.close()
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+        self._session.cluster.shutdown()
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self._session.cluster.shutdown()
+    self._session.cluster.shutdown()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\pylib\cqlshlib\copyutil.py", line 2334, in close
+   self._session.cluster.shutdown()
+      self._session.cluster.shutdown()
+     self._session.cluster.shutdown()
+     self._session.cluster.shutdown()
+    self._session.cluster.shutdown()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   self._session.cluster.shutdown()
+    self._session.cluster.shutdown()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   self._session.cluster.shutdown()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+     self.control_connection.shutdown()
+     self.control_connection.shutdown()
+     self.control_connection.shutdown()
+   self.control_connection.shutdown()
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 1259, in shutdown
+   self.control_connection.shutdown()
+     self.control_connection.shutdown()
+   self.control_connection.shutdown()
+    File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   self.control_connection.shutdown()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+     File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+     self._connection.close()
+   self.control_connection.shutdown()
+   self._connection.close()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   self.control_connection.shutdown()
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+    self.control_connection.shutdown()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   self._connection.close()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+    self._connection.close()
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+     self._connection.close()
+   self._connection.close()
+   File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+    self._connection.close()
+   self._connection.close()
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+    AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+     AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+    self._connection.close()
+    File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\cluster.py", line 2850, in shutdown
+        cls._loop.add_timer(timer)
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+     AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+   self._connection.close()
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+A    cls._loop.add_timer(timer)
+   cls._loop.add_timer(timer)
+    self._connection.close()
+     ttributeError: 'NoneType' object has no attribute 'add_timer'
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+AA File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+    AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+   cls._loop.add_timer(timer)
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+  ttributeError: 'NoneType' object has no attribute 'add_timer'
+  File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 373, in close
+ A File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+ ttributeError: 'NoneType' object has no attribute 'add_timer'
+   cls._loop.add_timer(timer)
+   cls._loop.add_timer(timer)
+   cls._loop.add_timer(timer)
+  ttributeError: 'NoneType' object has no attribute 'add_timer'
+    cls._loop.add_timer(timer)
+AAA   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+   AsyncoreConnection.create_timer(0, partial(asyncore.dispatcher.close, self))
+   cls._loop.add_timer(timer)
+AttributeError: 'NoneType' object has no attribute 'add_timer'
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+  AttributeError: 'NoneType' object has no attribute 'add_timer'
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+ File "D:\Program_Files\apache-cassandra-3.11.10\bin\..\lib\cassandra-driver-internal-only-3.11.0-bb96859b.zip\cassandra-driver-3.11.0-bb96859b\cassandra\io\asyncorereactor.py", line 335, in create_timer
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+     cls._loop.add_timer(timer)
+   cls._loop.add_timer(timer)
+AAttributeError: 'NoneType' object has no attribute 'add_timer'
+ttributeError: 'NoneType' object has no attribute 'add_timer'
+Processed: 3 rows; Rate:       1 rows/s; Avg. rate:       1 rows/s
+3 rows imported from 1 files in 2.378 seconds (0 skipped).
+cqlsh:company> select * from Employee;
+
+ id | name    | dept     | designation | emp_no | hobbies                            | marital_status | previous_expirence | salary
+----+---------+----------+-------------+--------+------------------------------------+----------------+--------------------+--------
+  1 | Dhanraj | Software |  junior dev |    101 | {'bloging', 'football', 'running'} |    Not married |               null |  90000
+  2 |    Raju |      Ceo |     Manager |    202 |             {'cooking', 'reading'} |        married |               null |  88000
+  4 |    Alex |    Sales |     Manager |    202 |             {'cooking', 'reading'} |        married |                 15 | 111000
+
+(3 rows)
+cqlsh:company> select * from Employee where designation="Manager";
+SyntaxException: line 1:50 no viable alternative at input ';' (...* from Employee where designation=["Manage]r";)
+cqlsh:company> select * from Employee where designation='Manager';
+InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query as it might involve data filtering and thus may have unpredictable performance. If you want to execute this query despite the performance unpredictability, use ALLOW FILTERING"
+cqlsh:company> select * from Employee where designation='Manager' ALLOW FILTERING;
+
+ id | name | dept  | designation | emp_no | hobbies                | marital_status | previous_expirence | salary
+----+------+-------+-------------+--------+------------------------+----------------+--------------------+--------
+  2 | Raju |   Ceo |     Manager |    202 | {'cooking', 'reading'} |        married |               null |  88000
+  4 | Alex | Sales |     Manager |    202 | {'cooking', 'reading'} |        married |                 15 | 111000
+
+(2 rows)
+cqlsh:company> select * from Employee where designation='Manager'and salary>85000 ALLOW FILTERING;
+
+ id | name | dept  | designation | emp_no | hobbies                | marital_status | previous_expirence | salary
+----+------+-------+-------------+--------+------------------------+----------------+--------------------+--------
+  2 | Raju |   Ceo |     Manager |    202 | {'cooking', 'reading'} |        married |               null |  88000
+  4 | Alex | Sales |     Manager |    202 | {'cooking', 'reading'} |        married |                 15 | 111000
+
+(2 rows)
+cqlsh:company> select * from Employee where designation='Manager'and salary>85000 Order by name desc ALLOW FILTERING;
+InvalidRequest: Error from server: code=2200 [Invalid query] message="ORDER BY is only supported when the partition key is restricted by an EQ or an IN."
+cqlsh:company> describe Employee
+
+CREATE TABLE company.employee (
+    id int,
+    name text,
+    dept text,
+    designation text,
+    emp_no int,
+    hobbies set<text>,
+    marital_status text,
+    previous_expirence int,
+    salary int,
+    PRIMARY KEY (id, name)
+) WITH CLUSTERING ORDER BY (name ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';

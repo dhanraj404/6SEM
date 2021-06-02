@@ -1,0 +1,41 @@
+select *  from system_schema.keyspaces;
+
+create keyspace company with replication = {'class':'SimpleStrategy', 'replication_factor':1};
+
+use company;
+
+create table Employee (id int, name text, emp_no int, salary int, dept text, designation text, marital_status text, hobbies set<text>, primary key (id, name));
+
+describe Employee
+
+insert into Employee(id, name, dept, designation, emp_no, hobbies, marital_status, salary) values (1, 'Dhanraj','Software', 'junior dev', 101, {'football','bloging','running'}, 'Not married', 90000);
+
+select * from Employee;
+
+insert into Employee(id, name, dept, designation, emp_no, hobbies, marital_status, salary) values (2, 'Raju','Ceo', 'Manager', 202, {'cooking', 'reading'}, 'married', 88000);
+
+insert into Employee(id, name, dept, designation, emp_no, hobbies, marital_status, salary) values (4, 'Alex','Sales', 'Manager', 202, {'cooking', 'reading'}, 'married', 111000);
+
+select * from Employee;
+
+alter table Employee add previous_expirence int;
+
+select * from Employee;
+
+update Employee set previous_expirence=15 where id=4 and name='Alex';
+
+select * from Employee;
+
+copy Employee(id, name, dept, designation,emp_no,hobbies,marital_status,previous_expirence,salary) to 'C:\Users\dhanr\Desktop\LABTEST1\write.csv'
+
+truncate Employee;
+
+copy Employee(id, name, dept, designation,emp_no,hobbies,marital_status,previous_expirence,salary) from 'C:\Users\dhanr\Desktop\LABTEST1\read.csv'
+
+select * from Employee;
+
+select * from Employee where designation='Manager'and salary>85000 ALLOW FILTERING;
+
+select * from Employee where designation='Manager'and salary>85000 Order by name desc ALLOW FILTERING;
+
+drop compamy;
