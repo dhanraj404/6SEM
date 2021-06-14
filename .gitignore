@@ -1,3 +1,6 @@
 .venv/
 .vscode/
 ML_1BM18CS027/LAB7
+ML_1BM18CS027/chromedriver
+ML_1BM18CS027/feed.py
+

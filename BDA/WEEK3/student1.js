@@ -1,9 +1,4 @@
-
-
 use studentDB
-
-
-
 db.student.insert({
 
     rollNO: "1BM18CS027",
@@ -19,11 +14,6 @@ db.student.insert({
 }) 
 
 db.student.remove({rollNO: "1BM18CS027"})
-
-
-
-
-
 // 1
 
 db.student.insert({
@@ -71,11 +61,6 @@ db.student.insert({
    emailId: "xyz.cs18@bmsce.ac.in"
 
 }) 
-
-
-
-
-
 // to show values inserted in collections
 
 db.student.find()
@@ -88,18 +73,11 @@ db.student.find({"rollNO": "1BM18CS001"})
 
 db.student.find().pretty()
 
-
-
-
-
 // update value
 
 db.student.update({"rollNO": "1BM18CS001"}, {$set: { "name": "aaa", "emailId": "aaa1@bmsce.ac.in"}})
 
 db.student.find({"rollNO": "1BM18CS001"})
-
-
-
 //
 
 db.student.insert({
@@ -133,8 +111,6 @@ db.student.find({"rollNO": "11"})
 
 
 db.student.find().pretty()
-
-
 
 //export and import
 
